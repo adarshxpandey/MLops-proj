@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bangalore House Price Predictor</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      width: 360px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #dc2626;
+      margin-top: 10px;
+    }
+
+    ul {
+      padding-left: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h2>🏠 Bangalore House Price</h2>
+
+    <label>Area (sqft)</label>
+    <input id="area" type="number" value="1200">
+
+    <label>BHK</label>
+    <input id="bhk" type="number" value="2">
+
+    <label>Bathrooms</label>
+    <input id="bath" type="number" value="2">
+
+    <label>Location</label>
+    <select id="location"></select>
+
+    <button onclick="predict()">Predict Price</button>
+
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
+    <div id="weather"></div>
+
+    <h3>📊 Recent Predictions</h3>
+    <ul id="history"></ul>
+  </div>
+
+<script>
+async function loadLocations() {
+  try {
+    const res = await fetch("/locations");
+    const locations = await res.json();
+
+    const dropdown = document.getElementById("location");
+    dropdown.innerHTML = "";
+
+    locations.forEach(loc => {
+      const option = document.createElement("option");
+      option.value = loc;
+      option.text = loc;
+      dropdown.appendChild(option);
+    });
+  } catch (e) {
+    console.error("Failed to load locations:", e);
+  }
+}
+
+async function predict() {
+  document.getElementById("error").innerText = "";
+  document.getElementById("result").innerText = "";
+
+  const payload = {
+    area_sqft: parseFloat(document.getElementById("area").value),
+    bhk: parseInt(document.getElementById("bhk").value),
+    bath: parseInt(document.getElementById("bath").value),
+    location: document.getElementById("location").value
+  };
+
+  try {
+    const res = await fetch("/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      document.getElementById("error").innerText = `❌ Error: ${data.error}`;
+      return;
+    }
+
+    document.getElementById("result").innerText =
+      `₹${data.predicted_price_lakhs} Lakhs`;
+
+    document.getElementById("weather").innerText =
+      `🌤 Temperature: ${data.weather.temperature}°C | Metro Distance: ${data.weather.metro_distance} km`;
+
+    loadHistory();
+  } catch (e) {
+    document.getElementById("error").innerText = `❌ Network error: ${e.message}`;
+  }
+}
+
+async function loadHistory() {
+  try {
+    const res = await fetch("/predictions");
+    const data = await res.json();
+
+    const list = document.getElementById("history");
+    list.innerHTML = "";
+
+    data.forEach(item => {
+      if (item.area_sqft && item.location && item.predicted_price !== undefined) {
+        const li = document.createElement("li");
+        li.innerText =
+          `${item.area_sqft} sqft | ${item.location} → ₹${item.predicted_price} Lakhs`;
+        list.appendChild(li);
+      }
+    });
+  } catch (e) {
+    console.error("Failed to load history:", e);
+  }
+}
+
+loadLocations();
+loadHistory();
+</script>
+
+</body>
+</html>
