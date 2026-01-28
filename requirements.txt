@@ -5,3 +5,4 @@ numpy
 scikit-learn
 joblib
 pydantic
+requests==2.31.0
