@@ -166,3 +166,36 @@ def recent_predictions(limit: int = 10):
         }
         for r in rows
     ]
+from fastapi.responses import FileResponse
+
+@app.get("/")
+def root():
+    return FileResponse("static/index.html")
+
+@app.get("/ui/")
+def ui_home():
+    return FileResponse("static/index.html")
+
+@app.get("/ui/pages/predict.html")
+def predict_page():
+    return FileResponse("static/pages/predict.html")
+
+@app.get("/ui/pages/analytics.html")
+def analytics_page():
+    return FileResponse("static/pages/analytics.html")
+
+@app.get("/ui/pages/about.html")
+def about_page():
+    return FileResponse("static/pages/about.html")
+
+@app.get("/ui/pages/mlops.html")
+def mlops_page():
+    return FileResponse("static/pages/mlops.html")
+
+@app.get("/ui/pages/data.html")
+def data_page():
+    return FileResponse("static/pages/data.html")
+
+@app.get("/ui/pages/explain.html")
+def explain_page():
+    return FileResponse("static/pages/explain.html")
