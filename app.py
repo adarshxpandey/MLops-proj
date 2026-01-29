@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 import sqlite3
 
 from model import predict_price, MODEL_VERSION, VALID_LOCATIONS, get_weather_data
@@ -27,6 +28,12 @@ class PredictionRequest(BaseModel):
     bhk: int
     bath: int
     location: str
+
+
+@app.get("/")
+def root():
+    """Render health check + browser root route."""
+    return FileResponse("static/index.html")
 
 
 @app.post("/predict")
@@ -133,32 +140,6 @@ def get_analytics_summary():
     }
 
 
-@app.get("/predictions/recent")
-def recent_predictions(limit: int = 10):
-    conn = sqlite3.connect("predictions.db")
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT area_sqft, bhk, bath, location, predicted_price, timestamp
-        FROM predictions
-        ORDER BY timestamp DESC
-        LIMIT ?
-    """, (limit,))
-
-    rows = cursor.fetchall()
-    conn.close()
-
-    return [
-        {
-            "area_sqft": r[0],
-            "bhk": r[1],
-            "bath": r[2],
-            "location": r[3],
-            "predicted_price": r[4],
-            "timestamp": r[5]
-        }
-        for r in rows
-    ]
 @app.get("/predictions/recent")
 def recent_predictions(limit: int = 10):
     conn = sqlite3.connect("predictions.db")
