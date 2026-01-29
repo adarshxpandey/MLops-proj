@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Model Explainability</title>
+  <link rel="stylesheet" href="/ui/css/main.css" />
+</head>
+
+<body>
+  <div id="navbar"></div>
+<nav class="navbar">
+  <a href="/ui/">🏠 Home</a>
+  <a href="/ui/pages/predict.html">🔮 Predict</a>
+  <a href="/ui/pages/analytics.html">📊 Analytics</a>
+  <a href="/ui/pages/explain.html">🧠 Explain</a>
+  <a href="/ui/pages/mlops.html">🧪 MLOps</a>
+  <a href="/ui/pages/data.html">🗄 Data</a>
+  <a href="/ui/pages/about.html">👤 About</a>
+</nav>
+
+  <div class="container">
+    <h1>🧠 Model Explainability</h1>
+
+    <p>
+      This page explains <strong>how the model makes predictions</strong>
+      and which features influence house prices the most.
+    </p>
+
+    <h2>Feature Importance (Conceptual)</h2>
+    <ul>
+      <li><strong>Area (sqft)</strong> — Biggest impact on price</li>
+      <li><strong>Location</strong> — Premium vs developing areas</li>
+      <li><strong>BHK</strong> — Layout & livability</li>
+      <li><strong>Bathrooms</strong> — Comfort & resale value</li>
+    </ul>
+
+    <h2>How to interpret a prediction?</h2>
+    <p>
+      If two houses have the same size and BHK:
+    </p>
+    <ul>
+      <li>Better location → Higher price</li>
+      <li>More bathrooms → Slight increase</li>
+      <li>Very large area → Non-linear jump</li>
+    </ul>
+
+    <h2>Why this matters</h2>
+    <p>
+      Transparent models build trust.  
+      This system is designed not just to predict,
+      but to <strong>explain its reasoning</strong>.
+    </p>
+  </div>
+
+  <script>
+    fetch("/ui/components/navbar.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("navbar").innerHTML = html;
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bangalore ML System</title>
+  <link rel="stylesheet" href="/ui/css/main.css">
+</head>
+<body>
+<div id="navbar"></div>
+<nav class="navbar">
+  <a href="/ui/">🏠 Home</a>
+  <a href="/ui/pages/predict.html">🔮 Predict</a>
+  <a href="/ui/pages/analytics.html">📊 Analytics</a>
+  <a href="/ui/pages/explain.html">🧠 Explain</a>
+  <a href="/ui/pages/mlops.html">🧪 MLOps</a>
+  <a href="/ui/pages/data.html">🗄 Data</a>
+  <a href="/ui/pages/about.html">👤 About</a>
+</nav>
+
+<nav class="navbar">
+  <div><strong>🏠 Bangalore ML System</strong></div>
+  <div>
+    <a href="/ui/pages/predict.html">Predict</a>
+    <a href="/ui/pages/analytics.html">Analytics</a>
+    <a href="/ui/pages/mlops.html">MLOps</a>
+    <a href="/ui/pages/data.html">Data</a>
+    <a href="/ui/pages/explain.html">Explain</a>
+    <a href="/ui/pages/admin.html">Admin</a>
+    <a href="/ui/pages/about.html">About</a>
+  </div>
+</nav>
+
+<main class="container">
+    <section class="card">
+  <h1>⚙️ Model Lifecycle (MLOps)</h1>
+
+  <table>
+    <tr><td>Model Version</td><td>v1.0</td></tr>
+    <tr><td>Training Data</td><td>Bangalore Housing Dataset</td></tr>
+    <tr><td>RMSE</td><td>—</td></tr>
+  </table>
+
+  <button disabled>Trigger Retrain</button>
+</section>
+
+</main>
+<script>
+  fetch("/ui/components/navbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("navbar").innerHTML = html;
+    });
+</script>
+
+</body>
+</html>

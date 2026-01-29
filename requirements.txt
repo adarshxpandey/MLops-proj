@@ -6,3 +6,4 @@ scikit-learn
 joblib
 pydantic
 requests==2.31.0
+aiofiles

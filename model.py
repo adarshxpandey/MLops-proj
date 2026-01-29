@@ -130,3 +130,10 @@ def predict_price(area_sqft, bath, bhk, location):
     prediction = model.predict(df)[0]
     return round(prediction, 2)
     return round(prediction, 2)
+MODEL_METADATA = {
+    "version": "v1.0.0",
+    "trained_on": "Bengaluru House Prices (Kaggle)",
+    "records": 13320,
+    "algorithm": "Linear Regression",
+    "last_trained": "2026-01-20"
+}

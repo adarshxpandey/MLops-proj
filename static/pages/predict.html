@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Predict - Bangalore ML System</title>
+  <link rel="stylesheet" href="/ui/css/main.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="/ui/">🏠 Home</a>
+  <a href="/ui/pages/predict.html">🔮 Predict</a>
+  <a href="/ui/pages/analytics.html">📊 Analytics</a>
+  <a href="/ui/pages/explain.html">🧠 Explain</a>
+  <a href="/ui/pages/mlops.html">🧪 MLOps</a>
+  <a href="/ui/pages/data.html">🗄 Data</a>
+  <a href="/ui/pages/about.html">👤 About</a>
+</nav>
+
+<main class="container">
+  <section class="card">
+    <h1>🏠 Bangalore House Price Predictor</h1>
+
+    <label>Area (sqft)</label>
+    <input id="area" type="number" value="1200">
+
+    <label>BHK</label>
+    <input id="bhk" type="number" value="2">
+
+    <label>Bathrooms</label>
+    <input id="bath" type="number" value="2">
+
+    <label>Location</label>
+    <select id="location"></select>
+
+    <button onclick="predict()">Predict Price</button>
+
+    <div id="result"></div>
+    <div id="context"></div>
+  </section>
+
+  <section class="card">
+    <h2>📊 Recent Predictions</h2>
+    <ul id="history"></ul>
+  </section>
+</main>
+
+<script src="/ui/js/predict.js"></script>
+
+</body>
+</html>
+<script>
+  fetch("/ui/components/navbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("navbar").innerHTML = html;
+    });
+</script>
+
+</body>
+</html>

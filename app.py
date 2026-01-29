@@ -1,46 +1,27 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+import sqlite3
 
 from model import predict_price, MODEL_VERSION, VALID_LOCATIONS, get_weather_data
 from database import init_db, save_prediction, get_all_predictions
 
 
-
-
-
-
-
-from fastapi.middleware.cors import CORSMiddleware
-
 app = FastAPI(title="Bangalore House Price Predictor")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # later you can restrict
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-
-
-
-
-
-# --------------------------------------------------
-# App setup
-# --------------------------------------------------
-app = FastAPI(title="Bangalore House Price Predictor")
-app.mount("/ui", StaticFiles(directory="static", html=True), name="static")
-
+app.mount("/ui", StaticFiles(directory="static", html=True), name="ui")
 init_db()
 
 
-# --------------------------------------------------
-# Request schema
-# --------------------------------------------------
 class PredictionRequest(BaseModel):
     area_sqft: float
     bhk: int
@@ -48,9 +29,6 @@ class PredictionRequest(BaseModel):
     location: str
 
 
-# --------------------------------------------------
-# Predict endpoint
-# --------------------------------------------------
 @app.post("/predict")
 def predict(request: PredictionRequest):
     if request.location not in VALID_LOCATIONS:
@@ -99,9 +77,6 @@ def predict(request: PredictionRequest):
         }
 
 
-# --------------------------------------------------
-# History endpoint
-# --------------------------------------------------
 @app.get("/predictions")
 def read_predictions():
     rows = get_all_predictions()
@@ -119,9 +94,94 @@ def read_predictions():
     ]
 
 
-# --------------------------------------------------
-# Locations endpoint (SOURCE OF TRUTH)
-# --------------------------------------------------
 @app.get("/locations")
 def get_locations():
     return VALID_LOCATIONS
+
+
+@app.get("/analytics/summary")
+def get_analytics_summary():
+    conn = sqlite3.connect("predictions.db")
+    cursor = conn.cursor()
+
+    total = cursor.execute("SELECT COUNT(*) FROM predictions").fetchone()[0]
+
+    top_locations = cursor.execute("""
+        SELECT location, COUNT(*) as count
+        FROM predictions
+        GROUP BY location
+        ORDER BY count DESC
+        LIMIT 5
+    """).fetchall()
+
+    avg_by_bhk = cursor.execute("""
+        SELECT bhk, AVG(predicted_price) as avg_price
+        FROM predictions
+        GROUP BY bhk
+    """).fetchall()
+
+    conn.close()
+
+    return {
+        "total_predictions": total,
+        "top_locations": [
+            {"location": r[0], "count": r[1]} for r in top_locations
+        ],
+        "avg_price_by_bhk": [
+            {"bhk": r[0], "avg_price": round(r[1], 2)} for r in avg_by_bhk
+        ]
+    }
+
+
+@app.get("/predictions/recent")
+def recent_predictions(limit: int = 10):
+    conn = sqlite3.connect("predictions.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT area_sqft, bhk, bath, location, predicted_price, timestamp
+        FROM predictions
+        ORDER BY timestamp DESC
+        LIMIT ?
+    """, (limit,))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {
+            "area_sqft": r[0],
+            "bhk": r[1],
+            "bath": r[2],
+            "location": r[3],
+            "predicted_price": r[4],
+            "timestamp": r[5]
+        }
+        for r in rows
+    ]
+@app.get("/predictions/recent")
+def recent_predictions(limit: int = 10):
+    conn = sqlite3.connect("predictions.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT area_sqft, bhk, bath, location, predicted_price, timestamp
+        FROM predictions
+        ORDER BY timestamp DESC
+        LIMIT ?
+    """, (limit,))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {
+            "area_sqft": r[0],
+            "bhk": r[1],
+            "bath": r[2],
+            "location": r[3],
+            "predicted_price": r[4],
+            "timestamp": r[5]
+        }
+        for r in rows
+    ]

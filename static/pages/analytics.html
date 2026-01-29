@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Analytics - Bangalore ML System</title>
+  <link rel="stylesheet" href="/ui/css/main.css">
+  <style>
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      background: #f0f9ff;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #2563eb;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 10px;
+      background: #f9fafb;
+      margin-bottom: 8px;
+      border-radius: 5px;
+      border-left: 3px solid #2563eb;
+    }
+
+    h2 {
+      margin-top: 20px;
+      margin-bottom: 15px;
+      font-size: 18px;
+      color: #1f2937;
+    }
+
+    #analytics-error {
+      color: #dc2626;
+      padding: 15px;
+      background: #fee2e2;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .loading {
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="/ui/">🏠 Home</a>
+  <a href="/ui/pages/predict.html">🔮 Predict</a>
+  <a href="/ui/pages/analytics.html">📊 Analytics</a>
+  <a href="/ui/pages/explain.html">🧠 Explain</a>
+  <a href="/ui/pages/mlops.html">🧪 MLOps</a>
+  <a href="/ui/pages/data.html">🗄 Data</a>
+  <a href="/ui/pages/about.html">👤 About</a>
+</nav>
+
+<main>
+  <section class="card">
+    <h1>📊 Analytics Dashboard</h1>
+    
+    <div id="analytics-error"></div>
+    
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-label">Total Predictions</div>
+        <div class="stat-value" id="total-predictions"><span class="loading">Loading...</span></div>
+      </div>
+    </div>
+
+    <h2>🏙️ Top Locations</h2>
+    <ul id="top-locations">
+      <li class="loading">Loading...</li>
+    </ul>
+
+    <h2>💰 Average Price by BHK</h2>
+    <ul id="avg-by-bhk">
+      <li class="loading">Loading...</li>
+    </ul>
+  </section>
+</main>
+
+<script src="/ui/js/analytics.js"></script>
+
+</body>
+</html>

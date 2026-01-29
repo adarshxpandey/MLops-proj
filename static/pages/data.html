@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bangalore ML System</title>
+  <link rel="stylesheet" href="/ui/css/main.css">
+</head>
+<body>
+<div id="navbar"></div>
+<nav class="navbar">
+  <a href="/ui/">🏠 Home</a>
+  <a href="/ui/pages/predict.html">🔮 Predict</a>
+  <a href="/ui/pages/analytics.html">📊 Analytics</a>
+  <a href="/ui/pages/explain.html">🧠 Explain</a>
+  <a href="/ui/pages/mlops.html">🧪 MLOps</a>
+  <a href="/ui/pages/data.html">🗄 Data</a>
+  <a href="/ui/pages/about.html">👤 About</a>
+</nav>
+
+<nav class="navbar">
+  <div><strong>🏠 Bangalore ML System</strong></div>
+  <div>
+    <a href="/ui/pages/predict.html">Predict</a>
+    <a href="/ui/pages/analytics.html">Analytics</a>
+    <a href="/ui/pages/mlops.html">MLOps</a>
+    <a href="/ui/pages/data.html">Data</a>
+    <a href="/ui/pages/explain.html">Explain</a>
+    <a href="/ui/pages/admin.html">Admin</a>
+    <a href="/ui/pages/about.html">About</a>
+  </div>
+</nav>
+
+<main class="container">
+    <section class="card">
+  <h1>🗄️ Data Systems</h1>
+
+  <h2>SQLite (Current)</h2>
+  <pre>
+predictions(
+  id,
+  area_sqft,
+  bhk,
+  bath,
+  location,
+  predicted_price,
+  timestamp
+)
+  </pre>
+
+  <h2>Snowflake (Planned)</h2>
+  <p>Designed for future scale with fact & dimension tables.</p>
+</section>
+
+</main>
+<script>
+  fetch("/ui/components/navbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("navbar").innerHTML = html;
+    });
+</script>
+
+</body>
+</html>

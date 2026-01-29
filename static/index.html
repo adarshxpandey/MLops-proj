@@ -5,13 +5,43 @@
   <title>Bangalore House Price Predictor</title>
 
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: #f4f6f8;
+    }
+
+    .navbar {
+      display: flex;
+      gap: 15px;
+      background: #2563eb;
+      padding: 15px 20px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      opacity: 0.8;
+    }
+
+    .container {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: calc(100vh - 60px);
+      padding: 20px;
     }
 
     .card {
@@ -24,6 +54,7 @@
 
     h2 {
       text-align: center;
+      margin-bottom: 15px;
     }
 
     label {
@@ -37,19 +68,26 @@
       padding: 8px;
       margin-top: 5px;
       margin-bottom: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 5px;
     }
 
     button {
       background: #2563eb;
       color: white;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #1d4ed8;
     }
 
     .result {
       margin-top: 10px;
       font-weight: bold;
+      color: #065f46;
     }
 
     .error {
@@ -57,39 +95,70 @@
       margin-top: 10px;
     }
 
+    #weather {
+      margin-top: 10px;
+      color: #0c4a6e;
+    }
+
+    h3 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
     ul {
       padding-left: 18px;
+    }
+
+    li {
+      margin-bottom: 8px;
     }
   </style>
 </head>
 
 <body>
-  <div class="card">
-    <h2>🏠 Bangalore House Price</h2>
+  <nav class="navbar">
+    <a href="/ui/">🏠 Home</a>
+    <a href="/ui/pages/predict.html">🔮 Predict</a>
+    <a href="/ui/pages/analytics.html">📊 Analytics</a>
+    <a href="/ui/pages/explain.html">🧠 Explain</a>
+    <a href="/ui/pages/mlops.html">🧪 MLOps</a>
+    <a href="/ui/pages/data.html">🗄 Data</a>
+    <a href="/ui/pages/about.html">👤 About</a>
+  </nav>
 
-    <label>Area (sqft)</label>
-    <input id="area" type="number" value="1200">
+  <div class="container">
+    <div class="card">
+      <h2>🏠 Bangalore House Price</h2>
 
-    <label>BHK</label>
-    <input id="bhk" type="number" value="2">
+      <label>Area (sqft)</label>
+      <input id="area" type="number" value="1200">
 
-    <label>Bathrooms</label>
-    <input id="bath" type="number" value="2">
+      <label>BHK</label>
+      <input id="bhk" type="number" value="2">
 
-    <label>Location</label>
-    <select id="location"></select>
+      <label>Bathrooms</label>
+      <input id="bath" type="number" value="2">
 
-    <button onclick="predict()">Predict Price</button>
+      <label>Location</label>
+      <select id="location"></select>
 
-    <div class="result" id="result"></div>
-    <div class="error" id="error"></div>
-    <div id="weather"></div>
+      <button onclick="predict()">Predict Price</button>
 
-    <h3>📊 Recent Predictions</h3>
-    <ul id="history"></ul>
+      <div class="result" id="result"></div>
+      <div class="error" id="error"></div>
+      <div id="weather"></div>
+
+      <h3>📊 Recent Predictions</h3>
+      <ul id="history"></ul>
+    </div>
   </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", async function() {
+  await loadLocations();
+  await loadHistory();
+});
+
 async function loadLocations() {
   try {
     const res = await fetch("/locations");
@@ -128,6 +197,7 @@ async function predict() {
     });
 
     const data = await res.json();
+    console.log(data);
 
     if (!data.success) {
       document.getElementById("error").innerText = `❌ Error: ${data.error}`;
@@ -166,9 +236,6 @@ async function loadHistory() {
     console.error("Failed to load history:", e);
   }
 }
-
-loadLocations();
-loadHistory();
 </script>
 
 </body>

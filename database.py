@@ -80,3 +80,44 @@ def get_all_predictions():
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+def get_analytics_summary():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    # 1. Total predictions
+    cursor.execute("SELECT COUNT(*) FROM predictions")
+    total_predictions = cursor.fetchone()[0]
+
+    # 2. Top locations
+    cursor.execute("""
+        SELECT location, COUNT(*) as cnt
+        FROM predictions
+        GROUP BY location
+        ORDER BY cnt DESC
+        LIMIT 5
+    """)
+    top_locations = [
+        {"location": row[0], "count": row[1]}
+        for row in cursor.fetchall()
+    ]
+
+    # 3. Average price by BHK
+    cursor.execute("""
+        SELECT bhk, ROUND(AVG(predicted_price), 2)
+        FROM predictions
+        GROUP BY bhk
+        ORDER BY bhk
+    """)
+    avg_price_by_bhk = [
+        {"bhk": row[0], "avg_price": row[1]}
+        for row in cursor.fetchall()
+    ]
+
+    conn.close()
+
+    return {
+        "total_predictions": total_predictions,
+        "top_locations": top_locations,
+        "avg_price_by_bhk": avg_price_by_bhk
+    }
